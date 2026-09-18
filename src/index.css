@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Chess Merida";
+  src: url("/fonts/ChessMerida.ttf") format("truetype");
+  font-display: block;
+}
+
 :root {
   --bg: #12150f;
   --bg-2: #1b2118;
@@ -8,8 +14,8 @@
   --brass-2: #8d6b3a;
   --danger: #b94a3c;
   --ok: #8faf6a;
-  --light-sq: #d7c6a3;
-  --dark-sq: #4d5c42;
+  --light-sq: #ffffff;
+  --dark-sq: #3d4a2e;
   --hi: rgba(232, 196, 106, 0.48);
   --last: rgba(196, 165, 116, 0.38);
   --attack: rgba(185, 74, 60, 0.42);
@@ -337,6 +343,7 @@ h2,
   position: relative;
   display: grid;
   place-items: center;
+  overflow: hidden;
 }
 
 .sq.light {
@@ -362,6 +369,7 @@ h2,
   border-radius: 50%;
   background: rgba(20, 24, 16, 0.35);
   position: absolute;
+  z-index: 1;
 }
 
 .sq.target.capture::after {
@@ -376,10 +384,16 @@ h2,
 }
 
 .piece {
-  width: 84%;
-  height: 84%;
-  filter: drop-shadow(0 0 0.5px #140f0a) drop-shadow(0 1px 1px rgba(0, 0, 0, 0.45));
+  width: 100%;
+  height: 100%;
+  display: block;
+  color: #111;
   pointer-events: none;
+  user-select: none;
+}
+
+.sq.dark .piece.black {
+  filter: drop-shadow(0 0 0.8px #f3efe4);
 }
 
 .sq.home {
@@ -409,9 +423,10 @@ h2,
 .promo button {
   background: transparent;
   border: 0;
-  color: var(--ink);
+  color: #111;
   cursor: pointer;
-  padding: 6px;
+  padding: 2px;
+  aspect-ratio: 1;
 }
 
 .focus-mode .topbar,

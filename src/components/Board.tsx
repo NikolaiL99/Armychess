@@ -146,7 +146,9 @@ export function Board({
               }}
               onClick={() => clickSquare(square)}
             >
-              {piece && !(drag && drag.from === square) ? <PieceView type={piece.type} color={piece.color} /> : null}
+              {piece && !(drag && drag.from === square) ? (
+                <PieceView type={piece.type} color={piece.color} />
+              ) : null}
               {promo && promo.to === square ? (
                 <div className="promo">
                   {(["queen", "rook", "bishop", "knight"] as Promo[]).map((type) => (
