@@ -88,12 +88,15 @@ function tickRoom(io: Server, room: Room) {
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.get("/health", (_req, res) => {
+  res.json({ ok: true });
+});
 
 const dist = path.resolve(__dirname, "../dist");
 if (existsSync(dist)) {
   app.use(express.static(dist));
   app.get(/.*/, (req, res, next) => {
-    if (req.path.startsWith("/socket.io")) return next();
+    if (req.path.startsWith("/socket.io") || req.path === "/health") return next();
     res.sendFile(path.join(dist, "index.html"));
   });
 }
