@@ -236,12 +236,6 @@ function GameTable({
   extraActions?: ReactNode;
 }) {
   const [focus, setFocus] = useState(false);
-  const [, setTick] = useState(0);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setTick((n) => n + 1), 200);
-    return () => window.clearInterval(id);
-  }, []);
 
   useEffect(() => {
     const onFs = () => setFocus(Boolean(document.fullscreenElement));
@@ -251,11 +245,20 @@ function GameTable({
 
   async function toggleFocus() {
     const root = document.getElementById("game-root");
+    if (focus || document.fullscreenElement) {
+      try {
+        if (document.fullscreenElement) await document.exitFullscreen();
+      } catch {
+        /* CSS-only focus still needs to close */
+      }
+      setFocus(false);
+      return;
+    }
+    setFocus(true);
     try {
-      if (!document.fullscreenElement && root) await root.requestFullscreen();
-      else if (document.fullscreenElement) await document.exitFullscreen();
+      if (root) await root.requestFullscreen();
     } catch {
-      setFocus((v) => !v);
+      /* Keep the CSS layout if the browser blocks fullscreen */
     }
   }
 
@@ -277,6 +280,9 @@ function GameTable({
           </button>
         </div>
       </header>
+      <button className="focus-exit btn secondary" type="button" onClick={() => void toggleFocus()}>
+        Fokus beenden
+      </button>
       <div className="play-layout">
         <aside className="side">
           <ClockView clocks={state.clocks} color={topColor} label={topColor === "white" ? "Weiß" : "Schwarz"} />
@@ -284,16 +290,6 @@ function GameTable({
           {waiting ? extraActions : null}
         </aside>
         <div className="board-shell">
-          <div className="focus-clocks">
-            <span>
-              {topColor === "white" ? "Weiß" : "Schwarz"}{" "}
-              {Math.ceil(remainingNow(state.clocks, topColor) / 1000)}s
-            </span>
-            <span>
-              {bottomColor === "white" ? "Weiß" : "Schwarz"}{" "}
-              {Math.ceil(remainingNow(state.clocks, bottomColor) / 1000)}s
-            </span>
-          </div>
           <Board
             state={state}
             orientation={orientation}
