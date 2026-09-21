@@ -13,6 +13,10 @@ Armychess ist Schach auf einem **16×16**-Brett. Weiß beginnt, die Könige steh
 - Uhren: freie Startzeit plus optionaler Bonus pro Zug
 - Herausforderungslinks für Partien zu zweit
 
+## Online
+
+Die Website läuft unter [https://armychess.onrender.com](https://armychess.onrender.com).
+
 ## Starten
 
 ```bash
