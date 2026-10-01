@@ -7,6 +7,7 @@ import {
   kingHome,
   makeMove,
   movesFrom,
+  pieceMoves,
   placeKing,
   sq,
 } from "./engine";
@@ -140,6 +141,18 @@ describe("king capture", () => {
     expect(game.phase).toBe("over");
     expect(game.winner).toBe("black");
     expect(game.endReason).toBe("king-captured");
+  });
+});
+
+describe("premove helpers", () => {
+  it("lists a piece's moves even when it is not that color's turn", () => {
+    let game = placeKing(createGame(), kingHome("white"));
+    game = placeKing(game, kingHome("black"));
+    const blackPawn = sq(0, 12);
+    expect(game.turn).toBe("white");
+    expect(movesFrom(game, blackPawn)).toEqual([]);
+    expect(pieceMoves(game, blackPawn)).toContain(sq(0, 11));
+    expect(pieceMoves(game, blackPawn)).toContain(sq(0, 10));
   });
 });
 

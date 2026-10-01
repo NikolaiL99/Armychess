@@ -163,6 +163,7 @@ export function OnlineGame() {
     <GameTable
       state={room.state}
       orientation={color}
+      myColor={color}
       interactive={interactive}
       waiting={room.waiting}
       status={
@@ -217,6 +218,7 @@ function statusText(state: GameState, mode: "local" | "online", myColor?: Color)
 function GameTable({
   state,
   orientation,
+  myColor,
   interactive,
   waiting,
   status,
@@ -227,6 +229,7 @@ function GameTable({
 }: {
   state: GameState;
   orientation: Color;
+  myColor?: Color;
   interactive: boolean;
   waiting: boolean;
   status: string;
@@ -284,9 +287,16 @@ function GameTable({
         Fokus beenden
       </button>
       <div className="play-layout">
-        <aside className="side">
+        <aside className="side side-opp">
           <ClockView clocks={state.clocks} color={topColor} label={topColor === "white" ? "Weiß" : "Schwarz"} />
           <p className="status">{status}</p>
+          <p className="king-rule">
+            <strong>Königsregel.</strong> Es gibt kein Schach und kein Matt. Du darfst jede eigene Figur ziehen, auch
+            wenn dein König bedroht ist oder der Zug ihn ins Schlagen stellt. Gewonnen hat, wer den gegnerischen König
+            schlägt. Beim Platzieren kommt der König auf ein beliebiges Feld; steht dort eine Figur, tauscht sie auf das
+            Königsfeld (Weiß i1, Schwarz i16).
+          </p>
+          <p className="help-hint">Rechtsklick zeichnet Pfeile. Wenn der Gegner am Zug ist, kannst du deinen nächsten Zug als Premove vorbereiten.</p>
           {waiting ? extraActions : null}
         </aside>
         <div className="board-shell">
@@ -294,11 +304,13 @@ function GameTable({
             state={state}
             orientation={orientation}
             interactive={interactive && !waiting}
+            myColor={myColor}
+            allowPremove={Boolean(myColor) && !waiting && state.phase === "play"}
             onPlace={onPlace}
             onMove={onMove}
           />
         </div>
-        <aside className="side">
+        <aside className="side side-you">
           <ClockView clocks={state.clocks} color={bottomColor} label={bottomColor === "white" ? "Weiß" : "Schwarz"} />
           {!waiting ? extraActions : null}
           {state.phase === "over" ? <div className="banner">{describeEnd(state)}</div> : null}

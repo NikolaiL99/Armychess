@@ -296,6 +296,12 @@ function lastRank(color: Color): number {
   return color === "white" ? 15 : 0;
 }
 
+export function pieceMoves(state: GameState, from: number): number[] {
+  const piece = state.board[from];
+  if (!piece) return [];
+  return movesFrom({ ...state, turn: piece.color, phase: "play" }, from);
+}
+
 export function movesFrom(state: GameState, from: number): number[] {
   if (state.phase !== "play") return [];
   const piece = state.board[from];
